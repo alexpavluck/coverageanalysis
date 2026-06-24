@@ -1,0 +1,102 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Coverage Survey Analysis Tool</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+
+<!-- ── App chrome (hidden during print) ─────────────────────────────────── -->
+<div class="app-shell no-print">
+  <header class="app-header">
+    <h1>Coverage Survey Analysis Tool</h1>
+    <p class="tagline">
+      Upload a CES survey xlsx and generate the standard report.
+      The file never leaves your browser.
+    </p>
+  </header>
+
+  <section id="status-card" class="card">
+    <div id="status-text">Loading analysis engine…</div>
+    <div class="progress"><div id="progress-bar"></div></div>
+    <div id="status-detail" class="muted"></div>
+  </section>
+
+  <section id="config-card" class="card hidden">
+    <h2>1. Survey metadata</h2>
+    <div class="grid">
+      <label>Country
+        <input id="cfg-country" type="text" value="Sierra Leone" />
+      </label>
+      <label>Disease
+        <input id="cfg-disease" type="text" value="Onchocerciasis (OV)" />
+      </label>
+      <label>Drug name
+        <input id="cfg-drug" type="text" value="Ivermectin (IVM)" />
+      </label>
+      <label>Drug code (ESPEN)
+        <select id="cfg-drug-code">
+          <option value="ivm" selected>IVM — Ivermectin</option>
+          <option value="alb">ALB — Albendazole</option>
+          <option value="pzq">PZQ — Praziquantel</option>
+        </select>
+      </label>
+      <label>MDA round
+        <input id="cfg-mda" type="number" value="1" min="1" />
+      </label>
+      <label>Report date
+        <input id="cfg-date" type="text" placeholder="e.g. June 2026" />
+      </label>
+      <label>Sheet name (in xlsx)
+        <input id="cfg-sheet" type="text" value="data" />
+      </label>
+      <label>Epi threshold (%)
+        <input id="cfg-epi" type="number" value="65" min="0" max="100" />
+      </label>
+      <label>Therapeutic threshold (%)
+        <input id="cfg-thera" type="number" value="80" min="0" max="100" />
+      </label>
+    </div>
+
+    <h2 style="margin-top:18px">2. Reported coverage <span class="muted">(optional)</span></h2>
+    <p class="muted small">
+      One per line, format <code>District = 0.78</code>. Used to validate
+      reported coverage against the survey CI. Leave blank if not available.
+    </p>
+    <textarea id="cfg-reported" rows="3"
+              placeholder="Moyamba = 0.65&#10;Tonkolili = 0.85"></textarea>
+
+    <h2 style="margin-top:18px">3. Data file</h2>
+    <input id="file-input" type="file" accept=".xlsx" />
+
+    <div class="actions">
+      <button id="generate-btn" disabled>Generate report</button>
+      <span id="generate-hint" class="muted small">Upload an xlsx file to enable.</span>
+    </div>
+  </section>
+
+  <section id="result-card" class="card hidden">
+    <div class="row between">
+      <h2 style="margin:0">Report</h2>
+      <div class="actions">
+        <button id="print-btn">Save as PDF</button>
+        <button id="reset-btn" class="secondary">Run another</button>
+      </div>
+    </div>
+    <p class="muted small">
+      The browser's print dialog will open. Pick "Save as PDF" as the destination
+      to produce the PDF report.
+    </p>
+  </section>
+</div>
+
+<!-- ── Report renders here. Visible during print, app chrome is hidden. ── -->
+<main id="report-output"></main>
+
+<!-- Pyodide -->
+<script src="https://cdn.jsdelivr.net/pyodide/v0.26.4/full/pyodide.js"></script>
+<script src="app.js"></script>
+</body>
+</html>
